@@ -28,6 +28,7 @@ jobs:
       - uses: taiki-e/install-action@nextest
       - name: Test
         run: |
+          mkdir reports/coverage -p
           cargo llvm-cov nextest --all-features --workspace --lcov --output-path reports/coverage/lcov.info
       - name: Upload to codecov
         uses: codecov/codecov-action@v3
