@@ -1,0 +1,12 @@
+
+section .data
+hello:
+  db "World", 10
+hello_len:
+  equ $ - HELLO
+
+section .text
+
+  mov eax, 10 ; This is a comment
+  mov ebx, 40
+  int 0x80 ; Hi there
