@@ -5,8 +5,10 @@ pub enum Tokens {
     Semicolon,
     Comma,
     Dollar,
-    DoubleQuoteString(String),
+    SingleQuote,
     SingleQuoteString(String),
+    DoubleQuote,
+    DoubleQuoteString(String),
     Comment(String),
     Literal(String),
 }
