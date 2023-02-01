@@ -1,4 +1,8 @@
+#[cfg(feature = "serde")]
+use serde::{Serialize,Deserialize};
+
 #[derive(Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum Tokens {
     Whitespace,
     Newline,
@@ -32,6 +36,7 @@ impl Token {
 }
 
 #[derive(Debug, Eq, PartialEq)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Token {
     pub token: Tokens,
     pub src: String,

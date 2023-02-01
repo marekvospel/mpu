@@ -116,7 +116,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Vec<Token> {
                     if !quote_active {
                         if comment_active {
                             save_comment(&mut collected, &mut tokens, i);
-                            whitespace_active = false
+                            comment_active = false
                         } else if whitespace_active {
                             save_whitespace(&mut collected, &mut tokens, i);
                             whitespace_active = false
@@ -149,7 +149,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Vec<Token> {
                     if !double_quote_active {
                         if comment_active {
                             save_comment(&mut collected, &mut tokens, i);
-                            whitespace_active = false
+                            comment_active = false
                         } else if whitespace_active {
                             save_whitespace(&mut collected, &mut tokens, i);
                             whitespace_active = false

@@ -5,4 +5,12 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+"default" = ["serde"]
+"serde" = ["dep:serde"]
+
 [dependencies]
+serde = { version = "1.0.152", optional = true, default-features = false, features = ["derive"] }
+
+[dev-dependencies]
+serde_json = { version = "1.0.91" }

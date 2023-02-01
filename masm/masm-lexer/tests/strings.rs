@@ -46,6 +46,10 @@ fn should_have_string() {
         end: 17,
     });
 
+    // serde_json::to_string(tokenize("  db 'Hello world'"))
+    // println!("{}", serde_json::to_string(&tokenize("  db 'Hello world'")).unwrap());
+    // assert!(false);
+
     assert_eq!(tokenize("  db 'Hello world'"), assertion);
 }
 
