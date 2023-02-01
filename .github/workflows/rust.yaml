@@ -1,0 +1,35 @@
+on:
+  push:
+  pull_request:
+
+name: Rust action
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build the project
+    steps:
+     - uses: actions/checkout@v3
+     - uses: actions-rs/toolchain@v1
+       with:
+         toolchain: stable
+     - name: Build
+       steps:
+         - cargo build --workspace --all-features --release
+  coverage:
+    runs-on: ubuntu-latest
+    name: Generate coverage
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: taiki-e/install-action@cargo-llvm-cov
+      - uses: taiki-e/install-action@nextest
+      - name: Test
+        steps:
+          - cargo llvm-cov nextest --all-features --workspace --lcov --output-path reports/coverage/lcov.info
+      - name: Upload to codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./reports/coverage/lcov.info

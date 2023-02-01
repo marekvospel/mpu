@@ -35,8 +35,10 @@ pub fn tokenize<S: Into<String>>(code: S) -> Vec<Token> {
     let code = code.into();
     let mut tokens = Vec::new();
 
+    /*
     let mut quote_active = false;
     let mut double_quote_active = false;
+     */
     let mut whitespace_active = false;
     let mut comment_active = false;
 
