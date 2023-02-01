@@ -14,8 +14,8 @@ jobs:
        with:
          toolchain: stable
      - name: Build
-       steps:
-         - cargo build --workspace --all-features --release
+       run: |
+        cargo build --workspace --all-features --release
   coverage:
     runs-on: ubuntu-latest
     name: Generate coverage
@@ -27,8 +27,8 @@ jobs:
       - uses: taiki-e/install-action@cargo-llvm-cov
       - uses: taiki-e/install-action@nextest
       - name: Test
-        steps:
-          - cargo llvm-cov nextest --all-features --workspace --lcov --output-path reports/coverage/lcov.info
+        run: |
+          cargo llvm-cov nextest --all-features --workspace --lcov --output-path reports/coverage/lcov.info
       - name: Upload to codecov
         uses: codecov/codecov-action@v3
         with:
