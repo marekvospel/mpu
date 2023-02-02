@@ -1,6 +1,6 @@
+use anyhow::Result;
 use masm_lexer::*;
 use test_utils::*;
-use anyhow::Result;
 
 #[test]
 fn should_have_comment() -> Result<()> {

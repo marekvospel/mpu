@@ -1,14 +1,14 @@
 pub(crate) use crate::*;
 
 fn save_collected(collected: &mut String, tokens: &mut Vec<Token>, index: usize) {
-    if collected.len() > 0 {
+    if !collected.is_empty() {
         tokens.push(Token::detect(collected.to_string(), index));
         *collected = String::new();
     }
 }
 
 fn save_comment(collected: &mut String, tokens: &mut Vec<Token>, index: usize) {
-    if collected.len() > 0 {
+    if !collected.is_empty() {
         tokens.push(Token {
             token: Tokens::Comment(collected.clone()),
             start: index - collected.len(),
@@ -20,7 +20,7 @@ fn save_comment(collected: &mut String, tokens: &mut Vec<Token>, index: usize) {
 }
 
 fn save_whitespace(collected: &mut String, tokens: &mut Vec<Token>, index: usize) {
-    if collected.len() > 0 {
+    if !collected.is_empty() {
         tokens.push(Token {
             token: Tokens::Whitespace,
             start: index - collected.len(),
@@ -38,7 +38,7 @@ fn save_string(
     double: bool,
     escaped: &mut usize,
 ) {
-    if collected.len() > 0 {
+    if !collected.is_empty() {
         let str = collected.clone();
         tokens.push(Token {
             token: if double {
@@ -48,7 +48,7 @@ fn save_string(
             },
             start: index - collected.len() - *escaped,
             end: index - 1,
-            src: str.clone(),
+            src: str,
         });
         *escaped = 0;
         *collected = String::new();
@@ -71,11 +71,6 @@ pub fn tokenize<S: Into<String>>(code: S) -> Vec<Token> {
     for (i, char) in code.chars().enumerate() {
         if char == '\n' {
             escape_active = false;
-            if comment_active {
-                comment_active = false;
-
-                save_comment(&mut collected, &mut tokens, i)
-            }
         }
 
         if escape_active && (quote_active || double_quote_active) {
@@ -101,6 +96,23 @@ pub fn tokenize<S: Into<String>>(code: S) -> Vec<Token> {
                         end: i,
                         src: ";".into(),
                         token: Tokens::Semicolon,
+                    });
+                    continue;
+                }
+            }
+            ',' => {
+                if !quote_active && !double_quote_active && !comment_active {
+                    if whitespace_active {
+                        whitespace_active = false;
+                        save_whitespace(&mut collected, &mut tokens, i);
+                    } else {
+                        save_collected(&mut collected, &mut tokens, i);
+                    }
+                    tokens.push(Token {
+                        token: Tokens::Comma,
+                        src: ",".into(),
+                        start: i,
+                        end: i,
                     });
                     continue;
                 }
@@ -178,12 +190,6 @@ pub fn tokenize<S: Into<String>>(code: S) -> Vec<Token> {
                 }
             }
 
-            ' ' | '\r' => {
-                if !whitespace_active && !comment_active && !quote_active && !double_quote_active {
-                    save_collected(&mut collected, &mut tokens, i);
-                    whitespace_active = true;
-                }
-            }
             '\n' => {
                 if comment_active {
                     save_comment(&mut collected, &mut tokens, i);
@@ -202,6 +208,12 @@ pub fn tokenize<S: Into<String>>(code: S) -> Vec<Token> {
                 });
                 continue;
             }
+            c if c.is_whitespace() => {
+                if !whitespace_active && !comment_active && !quote_active && !double_quote_active {
+                    save_collected(&mut collected, &mut tokens, i);
+                    whitespace_active = true;
+                }
+            }
             _ => {
                 if whitespace_active {
                     save_whitespace(&mut collected, &mut tokens, i);
@@ -214,13 +226,15 @@ pub fn tokenize<S: Into<String>>(code: S) -> Vec<Token> {
     }
 
     if comment_active {
-        save_comment(&mut collected, &mut tokens, code.len())
+        save_comment(&mut collected, &mut tokens, code.len());
     } else if whitespace_active {
-        save_whitespace(&mut collected, &mut tokens, code.len())
+        save_whitespace(&mut collected, &mut tokens, code.len());
     } else if quote_active {
-        save_string(&mut collected, &mut tokens, code.len(), false, &mut escaped)
+        save_string(&mut collected, &mut tokens, code.len(), false, &mut escaped);
     } else if double_quote_active {
-        save_string(&mut collected, &mut tokens, code.len(), true, &mut escaped)
+        save_string(&mut collected, &mut tokens, code.len(), true, &mut escaped);
+    } else {
+        save_collected(&mut collected, &mut tokens, code.len());
     }
 
     tokens

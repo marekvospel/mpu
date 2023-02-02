@@ -1,0 +1,2 @@
+value:
+  db "Hello world", 0x10, 0x0

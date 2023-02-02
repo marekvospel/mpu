@@ -1,5 +1,5 @@
 #[cfg(feature = "serde")]
-use serde::{Serialize,Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
@@ -23,6 +23,10 @@ impl Token {
 
         use Tokens::*;
         let token = match src.as_str() {
+            "$" => Dollar,
+            ";" => Semicolon,
+            "," => Comma,
+            "\n" => Newline,
             src => Literal(src.into()),
         };
 

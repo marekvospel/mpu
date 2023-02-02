@@ -1,0 +1,96 @@
+[
+  {
+    "token": {
+      "Literal": "value:"
+    },
+    "src": "value:",
+    "start": 0,
+    "end": 5
+  },
+  {
+    "token": "Newline",
+    "src": "\n",
+    "start": 6,
+    "end": 6
+  },
+  {
+    "token": "Whitespace",
+    "src": "  ",
+    "start": 7,
+    "end": 8
+  },
+  {
+    "token": {
+      "Literal": "db"
+    },
+    "src": "db",
+    "start": 9,
+    "end": 10
+  },
+  {
+    "token": "Whitespace",
+    "src": " ",
+    "start": 11,
+    "end": 11
+  },
+  {
+    "token": "DoubleQuote",
+    "src": "\"",
+    "start": 12,
+    "end": 12
+  },
+  {
+    "token": {
+      "DoubleQuoteString": "Hello world"
+    },
+    "src": "Hello world",
+    "start": 13,
+    "end": 23
+  },
+  {
+    "token": "DoubleQuote",
+    "src": "\"",
+    "start": 24,
+    "end": 24
+  },
+  {
+    "token": "Comma",
+    "src": ",",
+    "start": 25,
+    "end": 25
+  },
+  {
+    "token": "Whitespace",
+    "src": " ",
+    "start": 26,
+    "end": 26
+  },
+  {
+    "token": {
+      "Literal": "0x10"
+    },
+    "src": "0x10",
+    "start": 27,
+    "end": 30
+  },
+  {
+    "token": "Comma",
+    "src": ",",
+    "start": 31,
+    "end": 31
+  },
+  {
+    "token": "Whitespace",
+    "src": " ",
+    "start": 32,
+    "end": 32
+  },
+  {
+    "token": {
+      "Literal": "0x0"
+    },
+    "src": "0x0",
+    "start": 33,
+    "end": 35
+  }
+]
