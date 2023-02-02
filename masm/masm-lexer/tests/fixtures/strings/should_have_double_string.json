@@ -1,0 +1,42 @@
+[
+  {
+    "token": "Whitespace",
+    "src": "  ",
+    "start": 0,
+    "end": 1
+  },
+  {
+    "token": {
+      "Literal": "db"
+    },
+    "src": "db",
+    "start": 2,
+    "end": 3
+  },
+  {
+    "token": "Whitespace",
+    "src": " ",
+    "start": 4,
+    "end": 4
+  },
+  {
+    "token": "DoubleQuote",
+    "src": "\"",
+    "start": 5,
+    "end": 5
+  },
+  {
+    "token": {
+      "DoubleQuoteString": "Hello world"
+    },
+    "src": "Hello world",
+    "start": 6,
+    "end": 16
+  },
+  {
+    "token": "DoubleQuote",
+    "src": "\"",
+    "start": 17,
+    "end": 17
+  }
+]

@@ -1,0 +1,48 @@
+[
+  {
+    "token": "Whitespace",
+    "src": " ",
+    "start": 0,
+    "end": 0
+  },
+  {
+    "token": "Semicolon",
+    "src": ";",
+    "start": 1,
+    "end": 1
+  },
+  {
+    "token": {
+      "Comment": " Hello world"
+    },
+    "src": " Hello world",
+    "start": 2,
+    "end": 13
+  },
+  {
+    "token": "Newline",
+    "src": "\n",
+    "start": 14,
+    "end": 14
+  },
+  {
+    "token": "Whitespace",
+    "src": "  ",
+    "start": 15,
+    "end": 16
+  },
+  {
+    "token": "Semicolon",
+    "src": ";",
+    "start": 17,
+    "end": 17
+  },
+  {
+    "token": {
+      "Comment": "Hi there"
+    },
+    "src": "Hi there",
+    "start": 18,
+    "end": 25
+  }
+]

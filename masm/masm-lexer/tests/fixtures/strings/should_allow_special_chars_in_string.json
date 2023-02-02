@@ -1,0 +1,22 @@
+[
+  {
+    "token": "DoubleQuote",
+    "src": "\"",
+    "start": 0,
+    "end": 0
+  },
+  {
+    "token": {
+      "DoubleQuoteString": " $'\""
+    },
+    "src": " $'\"",
+    "start": 1,
+    "end": 5
+  },
+  {
+    "token": "DoubleQuote",
+    "src": "\"",
+    "start": 6,
+    "end": 6
+  }
+]

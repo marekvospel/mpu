@@ -1,131 +1,38 @@
 use masm_lexer::*;
+use test_utils::*;
+use anyhow::Result;
 
 #[test]
-fn should_have_string() {
-    let mut assertion = Vec::new();
+fn should_have_string() -> Result<()> {
+    let code = get_pkg_fixture!("strings/should_have_string.masm")?;
+    let assertion = get_pkg_fixture!("strings/should_have_string.json")?;
 
-    assertion.push(Token {
-        token: Tokens::Whitespace,
-        src: "  ".into(),
-        start: 0,
-        end: 1,
-    });
+    let assertion: Vec<Token> = serde_json::from_str(&assertion)?;
 
-    assertion.push(Token {
-        token: Tokens::Literal("db".into()),
-        src: "db".into(),
-        start: 2,
-        end: 3,
-    });
+    assert_eq!(tokenize(code), assertion);
 
-    assertion.push(Token {
-        token: Tokens::Whitespace,
-        src: " ".into(),
-        start: 4,
-        end: 4,
-    });
-
-    assertion.push(Token {
-        token: Tokens::SingleQuote,
-        src: "'".into(),
-        start: 5,
-        end: 5,
-    });
-
-    assertion.push(Token {
-        token: Tokens::SingleQuoteString("Hello world".into()),
-        src: "Hello world".into(),
-        start: 6,
-        end: 16,
-    });
-
-    assertion.push(Token {
-        token: Tokens::SingleQuote,
-        src: "'".into(),
-        start: 17,
-        end: 17,
-    });
-
-    // serde_json::to_string(tokenize("  db 'Hello world'"))
-    // println!("{}", serde_json::to_string(&tokenize("  db 'Hello world'")).unwrap());
-    // assert!(false);
-
-    assert_eq!(tokenize("  db 'Hello world'"), assertion);
+    Ok(())
 }
 
 #[test]
-fn should_have_double_string() {
-    let mut assertion = Vec::new();
+fn should_have_double_string() -> Result<()> {
+    let code = get_pkg_fixture!("strings/should_have_double_string.masm")?;
+    let assertion = get_pkg_fixture!("strings/should_have_double_string.json")?;
 
-    assertion.push(Token {
-        token: Tokens::Whitespace,
-        src: "  ".into(),
-        start: 0,
-        end: 1,
-    });
+    let assertion: Vec<Token> = serde_json::from_str(&assertion)?;
 
-    assertion.push(Token {
-        token: Tokens::Literal("db".into()),
-        src: "db".into(),
-        start: 2,
-        end: 3,
-    });
+    assert_eq!(tokenize(code), assertion);
 
-    assertion.push(Token {
-        token: Tokens::Whitespace,
-        src: " ".into(),
-        start: 4,
-        end: 4,
-    });
-
-    assertion.push(Token {
-        token: Tokens::DoubleQuote,
-        src: "\"".into(),
-        start: 5,
-        end: 5,
-    });
-
-    assertion.push(Token {
-        token: Tokens::DoubleQuoteString("Hello world".into()),
-        src: "Hello world".into(),
-        start: 6,
-        end: 16,
-    });
-
-    assertion.push(Token {
-        token: Tokens::DoubleQuote,
-        src: "\"".into(),
-        start: 17,
-        end: 17,
-    });
-
-    assert_eq!(tokenize("  db \"Hello world\""), assertion);
+    Ok(())
 }
 
 #[test]
-fn should_allow_special_chars_in_string() {
-    let mut assertion = Vec::new();
+fn should_allow_special_chars_in_string() -> Result<()> {
+    let code = get_pkg_fixture!("strings/should_allow_special_chars_in_string.masm")?;
+    let assertion = get_pkg_fixture!("strings/should_allow_special_chars_in_string.json")?;
 
-    assertion.push(Token {
-        token: Tokens::DoubleQuote,
-        src: "\"".into(),
-        start: 0,
-        end: 0,
-    });
+    let assertion: Vec<Token> = serde_json::from_str(&assertion)?;
+    assert_eq!(tokenize(code), assertion);
 
-    assertion.push(Token {
-        token: Tokens::DoubleQuoteString(" $'\"".into()),
-        src: " $'\"".into(),
-        start: 1,
-        end: 5,
-    });
-
-    assertion.push(Token {
-        token: Tokens::DoubleQuote,
-        src: "\"".into(),
-        start: 6,
-        end: 6,
-    });
-
-    assert_eq!(tokenize("\" $'\\\"\""), assertion)
+    Ok(())
 }
