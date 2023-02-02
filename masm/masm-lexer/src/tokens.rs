@@ -1,7 +1,8 @@
+pub(crate) use crate::*;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum Tokens {
     Whitespace,
@@ -18,32 +19,24 @@ pub enum Tokens {
 }
 
 impl Token {
-    pub fn detect<S: Into<String>>(src: S, index: usize) -> Self {
-        let src = src.into();
-
+    pub fn detect(src: String, collected: String, loc: SourceLocation) -> Self {
         use Tokens::*;
-        let token = match src.as_str() {
+        let token = match collected.as_str() {
             "$" => Dollar,
             ";" => Semicolon,
             "," => Comma,
             "\n" => Newline,
-            src => Literal(src.into()),
+            _ => Literal(collected),
         };
 
-        Token {
-            token,
-            start: index - src.len(),
-            end: index - 1,
-            src,
-        }
+        Token { token, src, loc }
     }
 }
 
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Token {
     pub token: Tokens,
     pub src: String,
-    pub start: usize,
-    pub end: usize,
+    pub loc: SourceLocation,
 }

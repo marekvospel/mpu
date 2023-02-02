@@ -4,93 +4,201 @@
       "Literal": "value:"
     },
     "src": "value:",
-    "start": 0,
-    "end": 5
+    "loc": {
+      "start": {
+        "column": 0,
+        "line": 1,
+        "offset": 0
+      },
+      "end": {
+        "column": 6,
+        "line": 1,
+        "offset": 5
+      }
+    }
   },
   {
     "token": "Newline",
     "src": "\n",
-    "start": 6,
-    "end": 6
+    "loc": {
+      "start": {
+        "column": 7,
+        "line": 1,
+        "offset": 6
+      },
+      "end": {
+        "column": 7,
+        "line": 1,
+        "offset": 6
+      }
+    }
   },
   {
     "token": "Whitespace",
     "src": "  ",
-    "start": 7,
-    "end": 8
+    "loc": {
+      "start": {
+        "column": 1,
+        "line": 2,
+        "offset": 7
+      },
+      "end": {
+        "column": 2,
+        "line": 2,
+        "offset": 8
+      }
+    }
   },
   {
     "token": {
       "Literal": "db"
     },
     "src": "db",
-    "start": 9,
-    "end": 10
+    "loc": {
+      "start": {
+        "column": 3,
+        "line": 2,
+        "offset": 9
+      },
+      "end": {
+        "column": 4,
+        "line": 2,
+        "offset": 10
+      }
+    }
   },
   {
     "token": "Whitespace",
     "src": " ",
-    "start": 11,
-    "end": 11
-  },
-  {
-    "token": "DoubleQuote",
-    "src": "\"",
-    "start": 12,
-    "end": 12
+    "loc": {
+      "start": {
+        "column": 5,
+        "line": 2,
+        "offset": 11
+      },
+      "end": {
+        "column": 5,
+        "line": 2,
+        "offset": 11
+      }
+    }
   },
   {
     "token": {
       "DoubleQuoteString": "Hello world"
     },
-    "src": "Hello world",
-    "start": 13,
-    "end": 23
-  },
-  {
-    "token": "DoubleQuote",
-    "src": "\"",
-    "start": 24,
-    "end": 24
+    "src": "\"Hello world\"",
+    "loc": {
+      "start": {
+        "column": 6,
+        "line": 2,
+        "offset": 12
+      },
+      "end": {
+        "column": 18,
+        "line": 2,
+        "offset": 24
+      }
+    }
   },
   {
     "token": "Comma",
     "src": ",",
-    "start": 25,
-    "end": 25
+    "loc": {
+      "start": {
+        "column": 19,
+        "line": 2,
+        "offset": 25
+      },
+      "end": {
+        "column": 19,
+        "line": 2,
+        "offset": 25
+      }
+    }
   },
   {
     "token": "Whitespace",
     "src": " ",
-    "start": 26,
-    "end": 26
+    "loc": {
+      "start": {
+        "column": 20,
+        "line": 2,
+        "offset": 26
+      },
+      "end": {
+        "column": 20,
+        "line": 2,
+        "offset": 26
+      }
+    }
   },
   {
     "token": {
       "Literal": "0x10"
     },
     "src": "0x10",
-    "start": 27,
-    "end": 30
+    "loc": {
+      "start": {
+        "column": 21,
+        "line": 2,
+        "offset": 27
+      },
+      "end": {
+        "column": 24,
+        "line": 2,
+        "offset": 30
+      }
+    }
   },
   {
     "token": "Comma",
     "src": ",",
-    "start": 31,
-    "end": 31
+    "loc": {
+      "start": {
+        "column": 25,
+        "line": 2,
+        "offset": 31
+      },
+      "end": {
+        "column": 25,
+        "line": 2,
+        "offset": 31
+      }
+    }
   },
   {
     "token": "Whitespace",
     "src": " ",
-    "start": 32,
-    "end": 32
+    "loc": {
+      "start": {
+        "column": 26,
+        "line": 2,
+        "offset": 32
+      },
+      "end": {
+        "column": 26,
+        "line": 2,
+        "offset": 32
+      }
+    }
   },
   {
     "token": {
       "Literal": "0x0"
     },
     "src": "0x0",
-    "start": 33,
-    "end": 35
+    "loc": {
+      "start": {
+        "column": 27,
+        "line": 2,
+        "offset": 33
+      },
+      "end": {
+        "column": 29,
+        "line": 2,
+        "offset": 35
+      }
+    }
   }
 ]

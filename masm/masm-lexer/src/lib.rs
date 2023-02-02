@@ -10,13 +10,23 @@
 //! ```
 //! use masm_lexer::*;
 //!
-//! tokenize("...");
+//! tokenize("...")?;
 //! ```
 //!
 //! See [tokenize()]
 
+use thiserror::Error;
+
+pub use crate::position::*;
 pub use crate::tokenize::*;
 pub use crate::tokens::*;
 
+pub mod position;
 pub mod tokenize;
 pub mod tokens;
+
+#[derive(Debug, Error)]
+pub enum LexError {
+    #[error("unterminated string literal at {at}")]
+    UnterminatedString { at: Position },
+}

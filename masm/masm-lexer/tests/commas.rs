@@ -5,11 +5,12 @@ use test_utils::*;
 #[test]
 fn should_have_comma() -> Result<()> {
     let code = get_pkg_fixture!("commas/should_have_comma.masm")?;
+    println!("{}", serde_json::to_string(&tokenize(&code)?)?);
     let assertion = get_pkg_fixture!("commas/should_have_comma.json")?;
 
     let assertion: Vec<Token> = serde_json::from_str(&assertion)?;
 
-    assert_eq!(tokenize(code), assertion);
+    assert_eq!(tokenize(code)?, assertion);
 
     Ok(())
 }
