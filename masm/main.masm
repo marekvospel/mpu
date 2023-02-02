@@ -3,7 +3,7 @@ section .data
 hello:
   db "World", 10
 hello_len:
-  equ $ - HELLO
+  equ $ - hello
 
 section .text
 
