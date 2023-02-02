@@ -1,2 +1,2 @@
 [workspace]
-members = ["masm/*"]
+members = ["masm/*", "test-utils"]
