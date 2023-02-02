@@ -1,3 +1,4 @@
+use crate::LexError::UnterminatedString;
 pub(crate) use crate::*;
 
 fn save_collected(
@@ -313,6 +314,9 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
                         last_position,
                     );
                     whitespace_active = false
+                } else if quote_active || double_quote_active {
+                    let error_position = inc_position(last_position, 'a');
+                    return Err(UnterminatedString { at: error_position });
                 } else {
                     save_collected(
                         &code,
@@ -382,8 +386,8 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
             position,
         );
     } else if quote_active || double_quote_active {
-        // save_string(&mut collected, &mut tokens, code.len(), false, &mut escaped);
-        // save_string(&mut collected, &mut tokens, code.len(), true, &mut escaped);
+        let error_position = inc_position(position, 'a');
+        return Err(UnterminatedString { at: error_position });
     } else {
         save_collected(
             &code,

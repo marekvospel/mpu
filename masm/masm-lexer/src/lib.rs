@@ -25,7 +25,7 @@ pub mod position;
 pub mod tokenize;
 pub mod tokens;
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub enum LexError {
     #[error("unterminated string literal at {at}")]
     UnterminatedString { at: Position },
