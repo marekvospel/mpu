@@ -1,4 +1,5 @@
 use anyhow::Result;
+use masm_lexer::LexError::UnterminatedString;
 use masm_lexer::*;
 use test_utils::*;
 
@@ -54,7 +55,26 @@ fn should_return_unterminated_string_error() -> Result<()> {
     let code = get_pkg_fixture!("strings/should_return_unterminated_string_error.masm")?;
     let result = tokenize(code).unwrap_err();
 
-    assert_eq!(result.to_string(), "unterminated string literal at 1:32");
+    assert_eq!(
+        result,
+        vec![
+            UnterminatedString {
+                at: Position {
+                    line: 1,
+                    column: 32,
+                    offset: 31
+                }
+            },
+            UnterminatedString {
+                at: Position {
+                    line: 2,
+                    column: 32,
+                    offset: 63
+                }
+            }
+        ]
+        .into(),
+    );
 
     Ok(())
 }
@@ -64,28 +84,21 @@ fn should_return_unterminated_double_string_error() -> Result<()> {
     let code = get_pkg_fixture!("strings/should_return_unterminated_double_string_error.masm")?;
     let result = tokenize(code).unwrap_err();
 
-    assert_eq!(result.to_string(), "unterminated string literal at 1:32");
+    assert_eq!(
+        *result.inner.get(0).unwrap(),
+        UnterminatedString {
+            at: Position {
+                line: 1,
+                column: 32,
+                offset: 31
+            }
+        },
+    );
 
-    Ok(())
-}
-
-#[test]
-fn should_return_unterminated_string_error_newline() -> Result<()> {
-    let code = get_pkg_fixture!("strings/should_return_unterminated_string_error_newline.masm")?;
-    let result = tokenize(code).unwrap_err();
-
-    assert_eq!(result.to_string(), "unterminated string literal at 1:32");
-
-    Ok(())
-}
-
-#[test]
-fn should_return_unterminated_double_string_error_newline() -> Result<()> {
-    let code =
-        get_pkg_fixture!("strings/should_return_unterminated_double_string_error_newline.masm")?;
-    let result = tokenize(code).unwrap_err();
-
-    assert_eq!(result.to_string(), "unterminated string literal at 1:32");
+    assert_eq!(
+        result.inner.get(1).unwrap().to_string(),
+        "unterminated string literal at 2:32".to_string(),
+    );
 
     Ok(())
 }

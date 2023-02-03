@@ -59,7 +59,7 @@ impl LexerState {
     }
 }
 
-pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
+pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
     let code = code.into();
 
     // This might not be the best way to do things, because the original source file offset will be
@@ -70,6 +70,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
     let code = code.replace("\r\n", "\n");
 
     let mut tokens = Vec::new();
+    let mut errors = Vec::new();
 
     let mut position = Position::default();
     let mut collect_position = Position {
@@ -197,19 +198,19 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
             '\n' => {
                 let linebreak_position = inc_position(last_position, 'a');
                 if state.is_string() {
-                    return Err(UnterminatedString {
+                    errors.push(UnterminatedString {
                         at: linebreak_position,
                     });
-                } else {
-                    save_collected(
-                        &code,
-                        &mut collected,
-                        &mut tokens,
-                        collect_position,
-                        last_position,
-                        &mut state,
-                    );
                 }
+
+                save_collected(
+                    &code,
+                    &mut collected,
+                    &mut tokens,
+                    collect_position,
+                    last_position,
+                    &mut state,
+                );
                 tokens.push(Token {
                     token: Tokens::Newline,
                     src: "\n".into(),
@@ -255,7 +256,8 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
 
     if state.is_string() {
         let error_position = inc_position(position, 'a');
-        return Err(UnterminatedString { at: error_position });
+        errors.push(UnterminatedString { at: error_position });
+        return Err(errors.into());
     } else {
         save_collected(
             &code,
@@ -267,5 +269,9 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
         );
     }
 
-    Ok(tokens)
+    if errors.is_empty() {
+        Ok(tokens)
+    } else {
+        Err(errors.into())
+    }
 }

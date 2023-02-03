@@ -15,18 +15,39 @@
 //!
 //! See [tokenize()]
 
-use thiserror::Error;
-
 pub use crate::position::*;
 pub use crate::tokenize::*;
 pub use crate::tokens::*;
+use std::fmt::{Display, Formatter};
 
 pub mod position;
 pub mod tokenize;
 pub mod tokens;
 
-#[derive(Debug, Error, Clone, Ord, PartialOrd, Eq, PartialEq)]
+/// An enum of possible lexical errors.
+/// see [LexErrors]
+#[derive(Debug, thiserror::Error, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub enum LexError {
     #[error("unterminated string literal at {at}")]
     UnterminatedString { at: Position },
 }
+
+/// This struct is a wrapper for Vec<LexError>, so the tokenize function can return multiple errors.
+#[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
+pub struct LexErrors {
+    pub inner: Vec<LexError>,
+}
+
+impl From<Vec<LexError>> for LexErrors {
+    fn from(value: Vec<LexError>) -> Self {
+        LexErrors { inner: value }
+    }
+}
+
+impl Display for LexErrors {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        self.inner.iter().try_for_each(|e| writeln!(f, "{e}"))
+    }
+}
+
+impl std::error::Error for LexErrors {}
