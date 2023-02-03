@@ -7,73 +7,24 @@ fn save_collected(
     tokens: &mut Vec<Token>,
     start: Position,
     end: Position,
+    state: &mut LexerState,
 ) {
     if !collected.is_empty() {
         let loc = SourceLocation { start, end };
-        tokens.push(Token::detect(
-            get_location_from_source(code, loc),
-            collected.clone(),
-            loc,
-        ));
-        *collected = String::new();
-    }
-}
+        let src = get_location_from_source(code, loc);
 
-fn save_comment(
-    code: &str,
-    collected: &mut String,
-    tokens: &mut Vec<Token>,
-    start: Position,
-    end: Position,
-) {
-    if !collected.is_empty() {
-        let loc = SourceLocation { start, end };
-        tokens.push(Token {
-            token: Tokens::Comment(collected.clone()),
-            src: get_location_from_source(code, loc),
-            loc,
-        });
-        *collected = String::new();
-    }
-}
+        let content = collected.to_string();
+        let token = match state {
+            LexerState::Collecting => Tokens::detect(content),
+            LexerState::Quote => Tokens::SingleQuoteString(content),
+            LexerState::DoubleQuote => Tokens::DoubleQuoteString(content),
+            LexerState::Comment => Tokens::Comment(content),
+            LexerState::Whitespace => Tokens::Whitespace,
+        };
 
-fn save_whitespace(
-    code: &str,
-    collected: &mut String,
-    tokens: &mut Vec<Token>,
-    start: Position,
-    end: Position,
-) {
-    if !collected.is_empty() {
-        let loc = SourceLocation { start, end };
-        tokens.push(Token {
-            token: Tokens::Whitespace,
-            src: get_location_from_source(code, loc),
-            loc,
-        });
-        *collected = String::new();
-    }
-}
+        tokens.push(Token { token, src, loc });
 
-fn save_string(
-    src: &str,
-    collected: &mut String,
-    tokens: &mut Vec<Token>,
-    double: bool,
-    start: Position,
-    end: Position,
-) {
-    if !collected.is_empty() {
-        let loc = SourceLocation { start, end };
-        tokens.push(Token {
-            token: if double {
-                Tokens::DoubleQuoteString(collected.clone())
-            } else {
-                Tokens::SingleQuoteString(collected.clone())
-            },
-            src: get_location_from_source(src, loc),
-            loc,
-        });
+        *state = LexerState::Collecting;
         *collected = String::new();
     }
 }
@@ -89,21 +40,37 @@ fn inc_position(mut position: Position, char: char) -> Position {
     position
 }
 
+#[derive(Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
+enum LexerState {
+    Collecting,
+    Quote,
+    DoubleQuote,
+    Whitespace,
+    Comment,
+}
+
+impl LexerState {
+    fn is_string(&self) -> bool {
+        self == &LexerState::DoubleQuote || self == &LexerState::Quote
+    }
+
+    fn is_broken_by_whitespace(&self) -> bool {
+        matches!(self, LexerState::Collecting)
+    }
+}
+
 pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
     let code = code.into();
     let mut tokens = Vec::new();
 
     let mut position = Position::new();
     let mut collect_position = Position::new();
+    let mut collected = String::new();
     let mut reset_collect = false;
 
     let mut escape_active = false;
-    let mut quote_active = false;
-    let mut double_quote_active = false;
-    let mut whitespace_active = false;
-    let mut comment_active = false;
 
-    let mut collected = String::new();
+    let mut state = LexerState::Collecting;
 
     for (i, char) in code.chars().enumerate() {
         let last_position = position;
@@ -120,7 +87,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
             escape_active = false;
         }
 
-        if escape_active && (quote_active || double_quote_active) {
+        if escape_active && (state.is_string()) {
             collected.push(char);
             escape_active = false;
             continue;
@@ -128,26 +95,16 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
 
         match char {
             ';' => {
-                if !quote_active && !double_quote_active {
-                    comment_active = true;
-                    if whitespace_active {
-                        whitespace_active = false;
-                        save_whitespace(
-                            &code,
-                            &mut collected,
-                            &mut tokens,
-                            collect_position,
-                            last_position,
-                        );
-                    } else {
-                        save_collected(
-                            &code,
-                            &mut collected,
-                            &mut tokens,
-                            collect_position,
-                            last_position,
-                        );
-                    }
+                if !state.is_string() {
+                    save_collected(
+                        &code,
+                        &mut collected,
+                        &mut tokens,
+                        collect_position,
+                        last_position,
+                        &mut state,
+                    );
+                    state = LexerState::Comment;
 
                     tokens.push(Token {
                         src: ";".into(),
@@ -162,25 +119,15 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
                 }
             }
             ',' => {
-                if !quote_active && !double_quote_active && !comment_active {
-                    if whitespace_active {
-                        whitespace_active = false;
-                        save_whitespace(
-                            &code,
-                            &mut collected,
-                            &mut tokens,
-                            collect_position,
-                            last_position,
-                        );
-                    } else {
-                        save_collected(
-                            &code,
-                            &mut collected,
-                            &mut tokens,
-                            collect_position,
-                            last_position,
-                        );
-                    }
+                if !state.is_string() && state != LexerState::Comment {
+                    save_collected(
+                        &code,
+                        &mut collected,
+                        &mut tokens,
+                        collect_position,
+                        last_position,
+                        &mut state,
+                    );
                     tokens.push(Token {
                         token: Tokens::Comma,
                         src: ",".into(),
@@ -194,129 +141,53 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
                 }
             }
             '\\' => {
-                if quote_active || double_quote_active {
+                if state.is_string() {
                     escape_active = true;
                     continue;
                 }
             }
-            '\'' => {
-                if !double_quote_active {
-                    if quote_active {
-                        save_string(
+            '\'' | '"' => {
+                if (state != LexerState::DoubleQuote && char == '\'')
+                    || (state != LexerState::Quote && char == '"')
+                {
+                    if (state == LexerState::Quote && char == '\'')
+                        || (state == LexerState::DoubleQuote && char == '"')
+                    {
+                        save_collected(
                             &code,
                             &mut collected,
                             &mut tokens,
-                            false,
                             collect_position,
                             position,
+                            &mut state,
                         );
-                        quote_active = false;
                         reset_collect = true;
                         continue;
                     } else {
-                        if comment_active {
-                            save_comment(
-                                &code,
-                                &mut collected,
-                                &mut tokens,
-                                collect_position,
-                                last_position,
-                            );
-                            comment_active = false
-                        } else if whitespace_active {
-                            save_whitespace(
-                                &code,
-                                &mut collected,
-                                &mut tokens,
-                                collect_position,
-                                last_position,
-                            );
-                            whitespace_active = false
-                        } else {
-                            save_collected(
-                                &code,
-                                &mut collected,
-                                &mut tokens,
-                                collect_position,
-                                last_position,
-                            );
-                        }
-                        quote_active = true;
-                        collect_position = position;
-                        continue;
-                    }
-                }
-            }
-            '\"' => {
-                if !quote_active {
-                    if double_quote_active {
-                        save_string(
+                        save_collected(
                             &code,
                             &mut collected,
                             &mut tokens,
-                            true,
                             collect_position,
-                            position,
+                            last_position,
+                            &mut state,
                         );
-                        double_quote_active = false;
-                        reset_collect = true;
-                        continue;
-                    } else {
-                        if comment_active {
-                            save_comment(
-                                &code,
-                                &mut collected,
-                                &mut tokens,
-                                collect_position,
-                                last_position,
-                            );
-                            comment_active = false
-                        } else if whitespace_active {
-                            save_whitespace(
-                                &code,
-                                &mut collected,
-                                &mut tokens,
-                                collect_position,
-                                last_position,
-                            );
-                            whitespace_active = false
+                        state = if char == '\'' {
+                            LexerState::Quote
                         } else {
-                            save_collected(
-                                &code,
-                                &mut collected,
-                                &mut tokens,
-                                collect_position,
-                                last_position,
-                            );
-                        }
-                        double_quote_active = true;
+                            LexerState::DoubleQuote
+                        };
                         collect_position = position;
                         continue;
                     }
                 }
             }
             '\n' => {
-                if comment_active {
-                    save_comment(
-                        &code,
-                        &mut collected,
-                        &mut tokens,
-                        collect_position,
-                        last_position,
-                    );
-                    comment_active = false
-                } else if whitespace_active {
-                    save_whitespace(
-                        &code,
-                        &mut collected,
-                        &mut tokens,
-                        collect_position,
-                        last_position,
-                    );
-                    whitespace_active = false
-                } else if quote_active || double_quote_active {
-                    let error_position = inc_position(last_position, 'a');
-                    return Err(UnterminatedString { at: error_position });
+                let linebreak_position = inc_position(last_position, 'a');
+                if state.is_string() {
+                    return Err(UnterminatedString {
+                        at: linebreak_position,
+                    });
                 } else {
                     save_collected(
                         &code,
@@ -324,9 +195,9 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
                         &mut tokens,
                         collect_position,
                         last_position,
+                        &mut state,
                     );
                 }
-                let linebreak_position = inc_position(last_position, 'a');
                 tokens.push(Token {
                     token: Tokens::Newline,
                     src: "\n".into(),
@@ -339,29 +210,30 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
                 continue;
             }
             c if c.is_whitespace() => {
-                if !whitespace_active && !comment_active && !quote_active && !double_quote_active {
+                if state.is_broken_by_whitespace() {
                     save_collected(
                         &code,
                         &mut collected,
                         &mut tokens,
                         collect_position,
                         last_position,
+                        &mut state,
                     );
                     collect_position = position;
-                    whitespace_active = true;
+                    state = LexerState::Whitespace;
                 }
             }
             _ => {
-                if whitespace_active {
-                    save_whitespace(
+                if state == LexerState::Whitespace {
+                    save_collected(
                         &code,
                         &mut collected,
                         &mut tokens,
                         collect_position,
                         last_position,
+                        &mut state,
                     );
                     collect_position = position;
-                    whitespace_active = false;
                 }
             }
         };
@@ -369,23 +241,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
         collected.push(char);
     }
 
-    if comment_active {
-        save_comment(
-            &code,
-            &mut collected,
-            &mut tokens,
-            collect_position,
-            position,
-        );
-    } else if whitespace_active {
-        save_whitespace(
-            &code,
-            &mut collected,
-            &mut tokens,
-            collect_position,
-            position,
-        );
-    } else if quote_active || double_quote_active {
+    if state.is_string() {
         let error_position = inc_position(position, 'a');
         return Err(UnterminatedString { at: error_position });
     } else {
@@ -395,6 +251,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
             &mut tokens,
             collect_position,
             position,
+            &mut state,
         );
     }
 

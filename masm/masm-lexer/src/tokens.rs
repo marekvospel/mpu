@@ -10,26 +10,22 @@ pub enum Tokens {
     Semicolon,
     Comma,
     Dollar,
-    SingleQuote,
     SingleQuoteString(String),
-    DoubleQuote,
     DoubleQuoteString(String),
     Comment(String),
     Literal(String),
 }
 
-impl Token {
-    pub fn detect(src: String, collected: String, loc: SourceLocation) -> Self {
+impl Tokens {
+    pub fn detect(collected: String) -> Self {
         use Tokens::*;
-        let token = match collected.as_str() {
+        match collected.as_str() {
             "$" => Dollar,
             ";" => Semicolon,
             "," => Comma,
             "\n" => Newline,
             _ => Literal(collected),
-        };
-
-        Token { token, src, loc }
+        }
     }
 }
 
