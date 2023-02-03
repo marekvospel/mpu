@@ -27,6 +27,18 @@ fn should_have_double_string() -> Result<()> {
 }
 
 #[test]
+fn should_not_be_escaped() -> Result<()> {
+    let code = get_pkg_fixture!("strings/should_not_be_escaped.masm")?;
+    let assertion = get_pkg_fixture!("strings/should_not_be_escaped.json")?;
+
+    let assertion: Vec<Token> = serde_json::from_str(&assertion)?;
+
+    assert_eq!(tokenize(code)?, assertion);
+
+    Ok(())
+}
+
+#[test]
 fn should_allow_special_chars_in_string() -> Result<()> {
     let code = get_pkg_fixture!("strings/should_allow_special_chars_in_string.masm")?;
     let assertion = get_pkg_fixture!("strings/should_allow_special_chars_in_string.json")?;

@@ -71,8 +71,12 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
 
     let mut tokens = Vec::new();
 
-    let mut position = Position::new();
-    let mut collect_position = Position::new();
+    let mut position = Position::default();
+    let mut collect_position = Position {
+        line: 1,
+        column: 1,
+        offset: 0,
+    };
     let mut collected = String::new();
     let mut reset_collect = false;
 

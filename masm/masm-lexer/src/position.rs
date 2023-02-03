@@ -24,8 +24,8 @@ impl Display for Position {
     }
 }
 
-impl Position {
-    pub fn new() -> Self {
+impl Default for Position {
+    fn default() -> Self {
         Position {
             column: 0,
             line: 1,
@@ -53,7 +53,7 @@ mod test {
         let source = "abcde\nf";
 
         let location = SourceLocation {
-            start: Position::new(),
+            start: Position::default(),
             end: Position {
                 line: 1,
                 column: 5,

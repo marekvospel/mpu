@@ -1,9 +1,9 @@
 [
   {
     "token": {
-      "DoubleQuoteString": " $'\",;"
+      "Literal": "\\a"
     },
-    "src": "\" $'\\\",;\"",
+    "src": "\\a",
     "loc": {
       "start": {
         "column": 1,
@@ -11,9 +11,9 @@
         "offset": 0
       },
       "end": {
-        "column": 9,
+        "column": 2,
         "line": 1,
-        "offset": 8
+        "offset": 1
       }
     }
   }
