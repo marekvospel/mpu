@@ -9,20 +9,29 @@ jobs:
     name: Build the project
     steps:
      - uses: actions/checkout@v3
-     - uses: actions-rs/toolchain@v1
-       with:
-         toolchain: stable
+     - uses: dtolnay/rust-toolchain@stable
      - name: Build
        run: |
         cargo build --workspace --all-features --release
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    name: Test the project
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: taiki-e/install-action@nextest
+      - name: Test
+        run: |
+          cargo nextest run --all-features --workspace
   coverage:
     runs-on: ubuntu-latest
     name: Generate coverage
     steps:
       - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
+      - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@cargo-llvm-cov
       - uses: taiki-e/install-action@nextest
       - name: Test
