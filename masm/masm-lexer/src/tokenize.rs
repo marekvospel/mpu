@@ -61,6 +61,14 @@ impl LexerState {
 
 pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexError> {
     let code = code.into();
+
+    // This might not be the best way to do things, because the original source file offset will be
+    // wrong, but I don't really care about Windows, as Windows normies have no idea what a cli,
+    // assembler or assembly language is.
+    // I might return to this sometime.
+    #[cfg(windows)]
+    let code = code.replace("\r\n", "\n");
+
     let mut tokens = Vec::new();
 
     let mut position = Position::new();
