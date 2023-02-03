@@ -96,8 +96,8 @@ fn should_return_unterminated_double_string_error() -> Result<()> {
     );
 
     assert_eq!(
-        result.inner.get(1).unwrap().to_string(),
-        "unterminated string literal at 2:32".to_string(),
+        LexErrors::from(vec![result.inner.get(1).unwrap().to_owned()]).to_string(),
+        "unterminated string literal at 2:32\n".to_string(),
     );
 
     Ok(())
