@@ -107,7 +107,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
 
         match char {
             // Separators
-            ',' | ':' => {
+            ',' | ':' | '(' | ')' => {
                 if !state.is_string() && state != LexerState::Comment {
                     save_collected(
                         &code,
@@ -117,21 +117,18 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
                         last_position,
                         &mut state,
                     );
-                    let token = match char {
-                        ',' => Tokens::Comma,
-                        ':' => Tokens::Colon,
-                        // Rust is arguing :D
-                        _ => continue,
-                    };
 
-                    tokens.push(Token {
-                        token,
-                        src: char.into(),
-                        loc: SourceLocation {
-                            start: position,
-                            end: position,
-                        },
-                    });
+                    collected.push(char);
+
+                    save_collected(
+                        &code,
+                        &mut collected,
+                        &mut tokens,
+                        position,
+                        position,
+                        &mut state,
+                    );
+
                     reset_collect = true;
                     continue;
                 }
@@ -192,15 +189,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
                     );
                     state = LexerState::Comment;
 
-                    tokens.push(Token {
-                        src: ";".into(),
-                        token: Tokens::Semicolon,
-                        loc: SourceLocation {
-                            start: position,
-                            end: position,
-                        },
-                    });
-                    reset_collect = true;
+                    collect_position = position;
                     continue;
                 }
             }
