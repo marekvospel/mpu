@@ -8,11 +8,12 @@ pub enum Tokens {
     Whitespace,
     Newline,
     Semicolon,
+    Colon,
     Comma,
     Dollar,
     StringLiteral(String),
     Comment(String),
-    Literal(String),
+    Identifier(String),
 }
 
 impl Tokens {
@@ -21,9 +22,10 @@ impl Tokens {
         match collected.as_str() {
             "$" => Dollar,
             ";" => Semicolon,
+            ":" => Colon,
             "," => Comma,
             "\n" => Newline,
-            _ => Literal(collected),
+            _ => Identifier(collected),
         }
     }
 }

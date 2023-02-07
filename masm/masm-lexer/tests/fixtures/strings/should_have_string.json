@@ -17,7 +17,7 @@
   },
   {
     "token": {
-      "Literal": "db"
+      "Identifier": "db"
     },
     "src": "db",
     "loc": {

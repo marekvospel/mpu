@@ -1,7 +1,7 @@
 [
   {
     "token": {
-      "Literal": "\\a"
+      "Identifier": "\\a"
     },
     "src": "\\a",
     "loc": {

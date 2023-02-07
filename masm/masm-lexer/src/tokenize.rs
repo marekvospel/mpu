@@ -106,31 +106,8 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
         }
 
         match char {
-            ';' => {
-                if !state.is_string() {
-                    save_collected(
-                        &code,
-                        &mut collected,
-                        &mut tokens,
-                        collect_position,
-                        last_position,
-                        &mut state,
-                    );
-                    state = LexerState::Comment;
-
-                    tokens.push(Token {
-                        src: ";".into(),
-                        token: Tokens::Semicolon,
-                        loc: SourceLocation {
-                            start: position,
-                            end: position,
-                        },
-                    });
-                    reset_collect = true;
-                    continue;
-                }
-            }
-            ',' => {
+            // Separators
+            ',' | ':' => {
                 if !state.is_string() && state != LexerState::Comment {
                     save_collected(
                         &code,
@@ -140,9 +117,16 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
                         last_position,
                         &mut state,
                     );
+                    let token = match char {
+                        ',' => Tokens::Comma,
+                        ':' => Tokens::Colon,
+                        // Rust is arguing :D
+                        _ => continue,
+                    };
+
                     tokens.push(Token {
-                        token: Tokens::Comma,
-                        src: ",".into(),
+                        token,
+                        src: char.into(),
                         loc: SourceLocation {
                             start: position,
                             end: position,
@@ -152,12 +136,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
                     continue;
                 }
             }
-            '\\' => {
-                if state.is_string() {
-                    escape_active = true;
-                    continue;
-                }
-            }
+            // String literals and escaping
             '\'' | '"' => {
                 if (state != LexerState::DoubleQuote && char == '\'')
                     || (state != LexerState::Quote && char == '"')
@@ -194,6 +173,38 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
                     }
                 }
             }
+            '\\' => {
+                if state.is_string() {
+                    escape_active = true;
+                    continue;
+                }
+            }
+            // Comments
+            ';' => {
+                if !state.is_string() {
+                    save_collected(
+                        &code,
+                        &mut collected,
+                        &mut tokens,
+                        collect_position,
+                        last_position,
+                        &mut state,
+                    );
+                    state = LexerState::Comment;
+
+                    tokens.push(Token {
+                        src: ";".into(),
+                        token: Tokens::Semicolon,
+                        loc: SourceLocation {
+                            start: position,
+                            end: position,
+                        },
+                    });
+                    reset_collect = true;
+                    continue;
+                }
+            }
+            // newlines
             '\n' => {
                 let linebreak_position = inc_position(last_position, 'a');
                 if state.is_string() {
@@ -221,6 +232,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
                 reset_collect = true;
                 continue;
             }
+            // whitespace
             c if c.is_whitespace() => {
                 if state.is_broken_by_whitespace() {
                     save_collected(
@@ -235,6 +247,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
                     state = LexerState::Whitespace;
                 }
             }
+            // break whitespace
             _ => {
                 if state == LexerState::Whitespace {
                     save_collected(

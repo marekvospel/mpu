@@ -1,14 +1,30 @@
 [
   {
     "token": {
-      "Literal": "value:"
+      "Identifier": "value"
     },
-    "src": "value:",
+    "src": "value",
     "loc": {
       "start": {
         "column": 1,
         "line": 1,
         "offset": 0
+      },
+      "end": {
+        "column": 5,
+        "line": 1,
+        "offset": 4
+      }
+    }
+  },
+  {
+    "token": "Colon",
+    "src": ":",
+    "loc": {
+      "start": {
+        "column": 6,
+        "line": 1,
+        "offset": 5
       },
       "end": {
         "column": 6,
@@ -51,7 +67,7 @@
   },
   {
     "token": {
-      "Literal": "db"
+      "Identifier": "db"
     },
     "src": "db",
     "loc": {
@@ -135,7 +151,7 @@
   },
   {
     "token": {
-      "Literal": "0x10"
+      "Identifier": "0x10"
     },
     "src": "0x10",
     "loc": {
@@ -185,7 +201,7 @@
   },
   {
     "token": {
-      "Literal": "0x0"
+      "Identifier": "0x0"
     },
     "src": "0x0",
     "loc": {
