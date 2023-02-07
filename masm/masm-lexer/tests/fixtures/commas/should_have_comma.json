@@ -85,7 +85,7 @@
   },
   {
     "token": {
-      "DoubleQuoteString": "Hello world"
+      "StringLiteral": "Hello world"
     },
     "src": "\"Hello world\"",
     "loc": {

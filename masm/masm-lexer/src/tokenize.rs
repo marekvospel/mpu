@@ -16,8 +16,7 @@ fn save_collected(
         let content = collected.to_string();
         let token = match state {
             LexerState::Collecting => Tokens::detect(content),
-            LexerState::Quote => Tokens::SingleQuoteString(content),
-            LexerState::DoubleQuote => Tokens::DoubleQuoteString(content),
+            LexerState::Quote | LexerState::DoubleQuote => Tokens::StringLiteral(content),
             LexerState::Comment => Tokens::Comment(content),
             LexerState::Whitespace => Tokens::Whitespace,
         };

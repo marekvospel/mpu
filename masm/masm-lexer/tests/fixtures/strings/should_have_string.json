@@ -51,7 +51,7 @@
   },
   {
     "token": {
-      "SingleQuoteString": "Hello world"
+      "StringLiteral": "Hello world"
     },
     "src": "'Hello world'",
     "loc": {
