@@ -57,22 +57,33 @@ fn should_return_unterminated_string_error() -> Result<()> {
 
     assert_eq!(
         result,
-        vec![
-            UnterminatedString {
-                at: Position {
-                    line: 1,
-                    column: 32,
-                    offset: 31
-                }
-            },
-            UnterminatedString {
-                at: Position {
-                    line: 2,
-                    column: 32,
-                    offset: 63
-                }
+        vec![UnterminatedString {
+            at: Position {
+                line: 1,
+                column: 32,
+                offset: 31
             }
-        ]
+        }]
+        .into(),
+    );
+
+    Ok(())
+}
+
+#[test]
+fn should_return_unterminated_string_error_eof() -> Result<()> {
+    let code = get_pkg_fixture!("strings/should_return_unterminated_string_error_eof.masm")?;
+    let result = tokenize(code).unwrap_err();
+
+    assert_eq!(
+        result,
+        vec![UnterminatedString {
+            at: Position {
+                line: 1,
+                column: 32,
+                offset: 31
+            }
+        }]
         .into(),
     );
 
