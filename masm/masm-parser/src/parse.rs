@@ -13,11 +13,11 @@ pub fn parse(input: Vec<Token>) {
 
     for token in input.into_iter() {
         match &token.token {
-            Tokens::OpenBracket
-            | Tokens::NumberLiteral(_)
+            /*Tokens::OpenBracket
+            |*/ Tokens::NumberLiteral(_)
             | Tokens::HexNumberLiteral(_)
             | Tokens::Operator(_)
-            | Tokens::CloseBracket => match parser_state {
+            /*| Tokens::CloseBracket*/ => match parser_state {
                 ParserState::None => {
                     parser_state = ParserState::NumberExpr(vec![token]);
                 }

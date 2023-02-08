@@ -7,11 +7,31 @@ pub enum MathExpressionNode {
     Literal(u32),
 }
 
+impl MathExpressionNode {
+    pub fn evaluate(&self) -> u32 {
+        match self {
+            MathExpressionNode::Expression(expr) => expr.evaluate(),
+            MathExpressionNode::Literal(lit) => *lit,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct MathExpression {
     left: MathExpressionNode,
     operator: OperatorType,
     right: MathExpressionNode,
+}
+
+impl MathExpression {
+    pub fn evaluate(&self) -> u32 {
+        match self.operator {
+            OperatorType::AddOperator => self.left.evaluate() + self.right.evaluate(),
+            OperatorType::SubOperator => self.left.evaluate() - self.right.evaluate(),
+            OperatorType::MulOperator => self.left.evaluate() * self.right.evaluate(),
+            OperatorType::DivOperator => self.left.evaluate() / self.right.evaluate(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Eq, PartialEq)]
@@ -48,49 +68,60 @@ fn to_parse_tokens(value: Vec<Token>) -> Vec<MathParseToken> {
 #[derive(Debug, Eq, PartialEq)]
 enum MathParserState {
     Term,
-    Calc,
+    Add,
 }
 
 pub(crate) fn parse_math(tokens: Vec<Token>) {
-    // ignore brackets for now
+    // TODO: ignore brackets for now
     let mut transforming = to_parse_tokens(tokens);
 
-    for state in [MathParserState::Term, MathParserState::Calc] {
-        let mut transformed = Vec::new();
+    for state in [MathParserState::Term, MathParserState::Add] {
+        let mut transformed: Vec<MathParseToken> = Vec::new();
+        let mut skip = false;
+
         for (i, token) in transforming.clone().into_iter().enumerate() {
+            if skip {
+                skip = false;
+                continue;
+            }
+
+            // Try to find the original tokens (Operators)
             if let Untransformed(token) = token.clone() {
                 if let Tokens::Operator(op) = &token.token {
-                    if state == MathParserState::Term
-                        && (*op == OperatorType::MulOperator || *op == OperatorType::DivOperator)
-                    {
-                        let left = match transformed.clone().last() {
-                            Some(token) => {
-                                if !transformed.is_empty() {
-                                    transformed.remove(transformed.len() - 1);
-                                }
-                                token
-                            }
-                            None => transforming.get(i - 1).unwrap(),
-                        }
-                        .to_owned();
+                    let is_mul = state == MathParserState::Term
+                        && (*op == OperatorType::MulOperator || *op == OperatorType::DivOperator);
+
+                    if is_mul || state == MathParserState::Add {
+                        let left = transformed.clone().last().unwrap().to_owned();
+                        transformed.remove(transformed.len() - 1);
 
                         let right = transforming.get(i + 1).unwrap().to_owned();
 
-                        println!("left: {left:?}\nright: {right:?}");
+                        skip = true;
 
                         transformed.push(MathParseToken::Expression(MathExpression {
                             left: left.into(),
                             right: right.into(),
                             operator: *op,
                         }))
+                    } else if !is_mul {
+                        transformed.push(Untransformed(token));
                     }
+                } else {
+                    transformed.push(Untransformed(token));
                 }
             } else {
-                transformed.push(token)
+                // Push already transformed tokens (Expressions)
+                transformed.push(token);
             }
         }
         transforming = transformed
     }
 
     println!("{transforming:?}");
+    println!("len: {}", transforming.len());
+
+    if let MathParseToken::Expression(ex) = transforming.get(0).unwrap() {
+        println!("Evaluated math expression: {}", ex.evaluate());
+    }
 }
