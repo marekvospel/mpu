@@ -44,7 +44,11 @@ dependencies = [
 name = "masm-parser"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "masm-lexer",
+ "masm-location",
+ "serde_json",
+ "test-utils",
 ]
 
 [[package]]

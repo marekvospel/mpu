@@ -7,3 +7,9 @@ edition = "2021"
 
 [dependencies]
 masm-lexer = { path = "../masm-lexer" }
+masm-location = { path = "../masm-location" }
+
+[dev-dependencies]
+serde_json = { version = "1.0.91" }
+anyhow = "1.0.68"
+test-utils = { path = "../../test-utils" }
