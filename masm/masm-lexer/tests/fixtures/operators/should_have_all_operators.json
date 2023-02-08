@@ -1,7 +1,7 @@
 [
   {
     "token": {
-      "Identifier": "10"
+      "NumberLiteral": "10"
     },
     "src": "10",
     "loc": {
@@ -69,7 +69,7 @@
   },
   {
     "token": {
-      "Identifier": "0x21"
+      "HexNumberLiteral": "21"
     },
     "src": "0x21",
     "loc": {
@@ -137,7 +137,7 @@
   },
   {
     "token": {
-      "Identifier": "3"
+      "NumberLiteral": "3"
     },
     "src": "3",
     "loc": {
@@ -221,7 +221,7 @@
   },
   {
     "token": {
-      "Identifier": "12"
+      "NumberLiteral": "12"
     },
     "src": "12",
     "loc": {
@@ -289,7 +289,7 @@
   },
   {
     "token": {
-      "Identifier": "1"
+      "NumberLiteral": "1"
     },
     "src": "1",
     "loc": {

@@ -29,13 +29,24 @@ pub enum Tokens {
     Operator(OperatorType),
     // Literals
     StringLiteral(String),
+    HexNumberLiteral(String),
+    NumberLiteral(String),
     // Identifiers
     Identifier(String),
+}
+
+fn matches_hex(value: &str) -> bool {
+    value.starts_with("0x")
+        && value
+            .trim_start_matches("0x")
+            .chars()
+            .all(|c| c.is_numeric())
 }
 
 impl Tokens {
     pub fn detect(collected: String) -> Self {
         use Tokens::*;
+
         match collected.as_str() {
             // Separators
             ":" => Colon,
@@ -49,6 +60,8 @@ impl Tokens {
             "*" => Operator(OperatorType::MulOperator),
             "/" => Operator(OperatorType::DivOperator),
             "\n" => Newline,
+            c if matches_hex(c) => HexNumberLiteral(collected.trim_start_matches("0x").to_string()),
+            c if c.chars().all(|c| c.is_numeric()) => NumberLiteral(collected),
             _ => Identifier(collected),
         }
     }

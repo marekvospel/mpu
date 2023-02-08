@@ -151,7 +151,7 @@
   },
   {
     "token": {
-      "Identifier": "0x10"
+      "HexNumberLiteral": "10"
     },
     "src": "0x10",
     "loc": {
@@ -201,7 +201,7 @@
   },
   {
     "token": {
-      "Identifier": "0x0"
+      "HexNumberLiteral": "0"
     },
     "src": "0x0",
     "loc": {
