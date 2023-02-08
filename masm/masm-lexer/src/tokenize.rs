@@ -1,4 +1,3 @@
-use crate::LexError::UnterminatedString;
 pub(crate) use crate::*;
 
 fn save_collected(
@@ -197,7 +196,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
             '\n' => {
                 let linebreak_position = inc_position(last_position, 'a');
                 if state.is_string() {
-                    errors.push(UnterminatedString {
+                    errors.push(LexError::UnterminatedString {
                         at: linebreak_position,
                     });
                 }
@@ -257,7 +256,7 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
 
     if state.is_string() {
         let error_position = inc_position(position, 'a');
-        errors.push(UnterminatedString { at: error_position });
+        errors.push(LexError::UnterminatedString { at: error_position });
         return Err(errors.into());
     } else {
         save_collected(

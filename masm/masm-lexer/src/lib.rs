@@ -15,12 +15,11 @@
 //!
 //! See [tokenize()]
 
-pub use crate::position::*;
 pub use crate::tokenize::*;
 pub use crate::tokens::*;
+pub(crate) use masm_location::*;
 use std::fmt::{Display, Formatter};
 
-pub mod position;
 pub mod tokenize;
 pub mod tokens;
 

@@ -1,6 +1,7 @@
 use anyhow::Result;
 use masm_lexer::LexError::UnterminatedString;
 use masm_lexer::*;
+use masm_location::*;
 use test_utils::*;
 
 #[test]

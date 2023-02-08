@@ -26,10 +26,25 @@ name = "masm-lexer"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "masm-location",
  "serde",
  "serde_json",
  "test-utils",
  "thiserror",
+]
+
+[[package]]
+name = "masm-location"
+version = "0.1.0"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "masm-parser"
+version = "0.1.0"
+dependencies = [
+ "masm-lexer",
 ]
 
 [[package]]
