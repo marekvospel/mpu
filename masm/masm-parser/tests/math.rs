@@ -30,7 +30,5 @@ fn should_create_math_exr_mul_terms() -> Result<()> {
 
     parse(tokenized);
 
-    assert!(false);
-
     Ok(())
 }

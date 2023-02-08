@@ -122,6 +122,8 @@ pub(crate) fn parse_math(tokens: Vec<Token>) {
     println!("len: {}", transforming.len());
 
     if let MathParseToken::Expression(ex) = transforming.get(0).unwrap() {
-        println!("Evaluated math expression: {}", ex.evaluate());
-    }
+        // println!("Evaluated math expression: {}", ex.evaluate());
+    };
+
+    // todo!()
 }

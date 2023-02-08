@@ -7,7 +7,7 @@ enum ParserState {
     None,
 }
 
-pub fn parse(input: Vec<Token>) {
+pub fn parse(input: Vec<Token>) -> Vec<ASLNode> {
     let mut list: Vec<ASLNode> = Vec::new();
     let mut parser_state = ParserState::None;
 
@@ -38,4 +38,5 @@ pub fn parse(input: Vec<Token>) {
 
     // println!("state: {parser_state:?}");
     // println!("tree: {list:?}");
+    list
 }

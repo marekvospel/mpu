@@ -1,5 +1,5 @@
 use crate::math_expression::MathExpression;
-use crate::*;
+// use crate::*;
 
 pub mod math_expression;
 
@@ -10,7 +10,7 @@ pub enum ASLNodes {
 
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
 pub struct ASLNode {
-    node: ASLNodes,
-    tokens: Vec<Token>,
-    loc: SourceLocation,
+    node: ASLNodes, /*,
+                    tokens: Vec<Token>,
+                    loc: SourceLocation,*/
 }
