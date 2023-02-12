@@ -40,12 +40,6 @@ enum MathParseToken {
     Expression(MathExpression),
 }
 
-impl From<Token> for MathParseToken {
-    fn from(value: Token) -> Self {
-        Untransformed(value)
-    }
-}
-
 impl From<MathParseToken> for MathExpressionNode {
     fn from(value: MathParseToken) -> Self {
         match value {
@@ -122,7 +116,7 @@ pub(crate) fn parse_math(tokens: Vec<Token>) {
     println!("len: {}", transforming.len());
 
     if let MathParseToken::Expression(ex) = transforming.get(0).unwrap() {
-        // println!("Evaluated math expression: {}", ex.evaluate());
+        println!("Evaluated math expression: {}", ex.evaluate());
     };
 
     // todo!()
