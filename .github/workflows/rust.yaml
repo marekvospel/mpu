@@ -20,6 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     name: Test the project
     steps:
+      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@nextest
@@ -30,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate coverage
     steps:
+      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@cargo-llvm-cov

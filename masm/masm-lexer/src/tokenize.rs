@@ -64,8 +64,9 @@ pub fn tokenize<S: Into<String>>(code: S) -> Result<Vec<Token>, LexErrors> {
     // wrong, but I don't really care about Windows, as Windows normies have no idea what a cli,
     // assembler or assembly language is.
     // I might return to this sometime.
-    #[cfg(windows)]
-    let code = code.replace("\r\n", "\n");
+    // #[cfg(windows)]
+    // let code = code.replace("\r\n", "\n");
+    // TODO: add \r whitespace to Newline token if followed by \n
 
     let mut tokens = Vec::new();
     let mut errors = Vec::new();
