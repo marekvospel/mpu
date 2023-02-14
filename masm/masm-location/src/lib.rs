@@ -34,6 +34,12 @@ impl Default for Position {
     }
 }
 
+impl Display for SourceLocation {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}-{}", self.start, self.end)
+    }
+}
+
 pub fn get_location_from_source<S: Into<String>>(source: S, loc: SourceLocation) -> String {
     let source = source.into();
 

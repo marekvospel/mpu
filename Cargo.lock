@@ -47,8 +47,10 @@ dependencies = [
  "anyhow",
  "masm-lexer",
  "masm-location",
+ "serde",
  "serde_json",
  "test-utils",
+ "thiserror",
 ]
 
 [[package]]

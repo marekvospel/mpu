@@ -1,5 +1,9 @@
-use crate::math_expression::parse_math;
-use crate::*;
+use crate::asl::ASLNode;
+use crate::parse::math_expression::parse_math;
+use crate::ParseError;
+use masm_lexer::{Token, Tokens};
+
+pub(crate) mod math_expression;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 enum ParserState {
@@ -7,8 +11,9 @@ enum ParserState {
     None,
 }
 
-pub fn parse(input: Vec<Token>) -> Vec<ASLNode> {
+pub fn parse(input: Vec<Token>) -> Result<Vec<ASLNode>, ParseError> {
     let mut list: Vec<ASLNode> = Vec::new();
+    let mut errors: Vec<ParseError> = Vec::new();
     let mut parser_state = ParserState::None;
 
     for token in input.into_iter() {
@@ -30,7 +35,13 @@ pub fn parse(input: Vec<Token>) -> Vec<ASLNode> {
             Tokens::Whitespace => {}
             _ => {
                 if let ParserState::NumberExpr(tokens) = parser_state.clone() {
-                    parse_math(tokens);
+                    let expression_or_lit = parse_math(tokens);
+
+                    println!("{expression_or_lit:?}");
+                    match expression_or_lit {
+                        Ok(node) => list.push(node),
+                        Err(err) => errors.push(err),
+                    }
                 }
             }
         }
@@ -38,5 +49,5 @@ pub fn parse(input: Vec<Token>) -> Vec<ASLNode> {
 
     // println!("state: {parser_state:?}");
     // println!("tree: {list:?}");
-    list
+    Ok(list)
 }

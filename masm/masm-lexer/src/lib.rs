@@ -7,7 +7,7 @@
 //! ## Usage
 //! To make importing easier, everything is imported publicly in the main module, so you can just
 //! use `use masm_lexer::*;` and everything will be imported as needed.
-//! ```
+//! ```rust
 //! use masm_lexer::*;
 //!
 //! tokenize("...")?;
@@ -31,7 +31,7 @@ pub enum LexError {
     UnterminatedString { at: Position },
 }
 
-/// This struct is a wrapper for Vec<LexError>, so the tokenize function can return multiple errors.
+/// This struct is a wrapper for `Vec<LexError>`, so the tokenize function can return multiple errors.
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq)]
 pub struct LexErrors {
     pub inner: Vec<LexError>,

@@ -1,0 +1,15 @@
+[
+  {
+    "node": {
+      "MathExpr": {
+        "left": {
+          "Literal": 1
+        },
+        "operator": "MulOperator",
+        "right": {
+          "Literal": 1
+        }
+      }
+    }
+  }
+]
