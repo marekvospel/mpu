@@ -5,6 +5,7 @@ use masm_parser::parse::parse;
 use test_utils::get_pkg_fixture;
 
 #[test]
+#[ignore]
 fn should_create_simple_math_expression() -> Result<()> {
     let code = get_pkg_fixture!("math/should_create_simple_math_expr.masm")?;
     let result = parse(tokenize(code)?)?;

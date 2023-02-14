@@ -11,6 +11,12 @@ pub enum OperatorType {
     DivOperator,
 }
 
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub enum InstructionType {
+    Mov,
+}
+
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum Tokens {
@@ -33,6 +39,8 @@ pub enum Tokens {
     NumberLiteral(String),
     // Identifiers
     Identifier(String),
+    // Keywords
+    Instruction(InstructionType),
 }
 
 fn matches_hex(value: &str) -> bool {
@@ -60,6 +68,7 @@ impl Tokens {
             "*" => Operator(OperatorType::MulOperator),
             "/" => Operator(OperatorType::DivOperator),
             "\n" => Newline,
+            "mov" => Instruction(InstructionType::Mov),
             c if matches_hex(c) => HexNumberLiteral(collected.trim_start_matches("0x").to_string()),
             c if c.chars().all(|c| c.is_numeric()) => NumberLiteral(collected),
             _ => Identifier(collected),

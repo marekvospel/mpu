@@ -14,7 +14,7 @@ pub enum ASLNodes {
 #[derive(Debug, Clone, Ord, PartialOrd, Eq, PartialEq, Hash)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ASLNode {
-    pub(crate) node: ASLNodes, /*,
-                               tokens: Vec<Token>,
-                               loc: SourceLocation,*/
+    pub(crate) node: ASLNodes,
+    // tokens: Vec<Token>,
+    // loc: SourceLocation,
 }
