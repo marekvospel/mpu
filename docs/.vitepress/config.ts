@@ -34,5 +34,10 @@ export default defineConfig({
       }
     ],
     outline: [2, 3],
+    algolia: {
+      appId: '5LZ9QLZ9ZW',
+      apiKey: '225bc788db3d8b1622885792ab6fd9c0',
+      indexName: 'mpu'
+    }
   },
 })
